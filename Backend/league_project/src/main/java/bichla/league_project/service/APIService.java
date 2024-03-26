@@ -7,6 +7,8 @@ import java.net.http.HttpResponse;
 
 import org.springframework.stereotype.Service;
 
+import bichla.league_project.exceptions.APIException;
+
 /**
  * 
  */
@@ -26,17 +28,23 @@ public class APIService {
     private String continent = "europe";
 
     public void test() {
-        System.out.println("Account: ");
-        String puuid = sendAccountRequest();
-        System.out.println(puuid);
-        System.out.println("-------------------------------------------------------------------");
-        System.out.println("Summoner: ");
-        String id = sendSummonerRequest(puuid);
-        System.out.println(id);
-        System.out.println("-------------------------------------------------------------------");
-        System.out.println("League: ");
-        String elo = sendLeagueRequest(id);
-        System.out.println(elo);
+        
+        try {
+            System.out.println("Account: ");
+            String puuid = sendAccountRequest();
+            System.out.println(puuid);
+            System.out.println("-------------------------------------------------------------------");
+            String id = sendSummonerRequest(puuid);
+            System.out.println("Summoner: ");
+            System.out.println(id);
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("League: ");
+            String elo = sendLeagueRequest(id);
+            System.out.println(elo);
+        } catch (APIException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private HttpRequest createRequest(final String endpointString) {
@@ -46,23 +54,27 @@ public class APIService {
         .build();
     }
 
-    private String sendRequest(HttpRequest request) {
+    private String sendRequest(HttpRequest request) throws APIException {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body(); // TODO change to JSON response handling.
+            int statusCode = response.statusCode();
+
+            if (statusCode == 200) {
+                return response.body(); // TODO change to JSON response handling.
+            } else {
+                throw new APIException("Failed API-Call: " + statusCode);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new APIException("Failed API-Call: " + e.getMessage());
         }
     }
 
     // Anfrage an Account-V1. Kontinent ist eigentlich irrelevant, Riot empfiehlt trotzdem dort den richtigen Wert zu nehmen.
     // Einziges wirkliches Response-Feld ist die PUUID des angefragten Accounts.
-    private String sendAccountRequest() {
+    private String sendAccountRequest() throws APIException {
         String accountEndpoint = HTTP + continent + ACCOUNT_API + summonerName + "/" + tagLine;
-        System.out.println("Request: " + accountEndpoint);
         HttpRequest accountRequest = createRequest(accountEndpoint);
         String response = sendRequest(accountRequest);
 
@@ -70,13 +82,12 @@ public class APIService {
             return response.split("\"")[3];
         } else {
             return null;
-            // Errorhandling
         }
     }
 
     // Anfrage an Summoner-V4. Anfrageparameter ist die bereits gespeicherte PUUID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten ID, AccountID, ProfileIconID, RevisionDate & SummonerLevel.
-    private String sendSummonerRequest(final String puuid) {
+    private String sendSummonerRequest(final String puuid) throws APIException {
         String summonerEndpoint = HTTP + region + SUMMONER_API + puuid;
         HttpRequest summonerRequest = createRequest(summonerEndpoint);
         String response = sendRequest(summonerRequest);
@@ -86,13 +97,12 @@ public class APIService {
             return id;
         } else {
             return null;
-            // Errorhandling
         }
     }
 
     // Anfrage an League-V4. Anfrageparameter ist die bereits gespeicherte ID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten QueueType, Tier, Rank, LeaguePoints, Wins & Losses.
-    private String sendLeagueRequest(final String summonerId) {
+    private String sendLeagueRequest(final String summonerId) throws APIException {
         String leagueEndpoint = HTTP + region + LEAGUE_API + summonerId;
         HttpRequest leagueRequest = createRequest(leagueEndpoint);
         String response = sendRequest(leagueRequest);
@@ -106,7 +116,6 @@ public class APIService {
             return tier + " " + division + " " + leaguePoints + " LP, " + wins + " Wins, " + losses + "Losses";
         } else {
             return null;
-            // Errorhandling
         }
     }
 }
