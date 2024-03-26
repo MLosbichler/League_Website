@@ -29,32 +29,6 @@ public class APIService {
     private final String SUMMONER_API = ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/";
     private final String LEAGUE_API = ".api.riotgames.com/lol/league/v4/entries/by-summoner/";
 
-    // Account-related fields. Will be input presented by the frontend later.
-    private String summonerName = "viechlich69";
-    private String tagLine = "EPHC";
-    private String region = "euw1";
-    private String continent = "europe";
-
-    public void test() {
-        
-        try {
-            System.out.println("Account: ");
-            RiotAccount riotAccount = sendAccountRequest();
-            System.out.println(riotAccount.getPuuid());
-            System.out.println("-------------------------------------------------------------------");
-            Summoner summoner = sendSummonerRequest(riotAccount.getPuuid());
-            System.out.println("Summoner: ");
-            System.out.println(summoner.getId());
-            System.out.println("-------------------------------------------------------------------");
-            System.out.println("League: ");
-            LeagueEntry[] leagueEntry = sendLeagueRequest(summoner.getId());
-            System.out.println(leagueEntry[0].getTier());
-        } catch (APIException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     private HttpRequest createRequest(final String endpointString) {
         return HttpRequest.newBuilder()
         .uri(URI.create(endpointString))
@@ -81,7 +55,7 @@ public class APIService {
 
     // Anfrage an Account-V1. Kontinent ist eigentlich irrelevant, Riot empfiehlt trotzdem dort den richtigen Wert zu nehmen.
     // Einziges wirkliches Response-Feld ist die PUUID des angefragten Accounts.
-    private RiotAccount sendAccountRequest() throws APIException {
+    public RiotAccount sendAccountRequest(final String continent, final String summonerName, final String tagLine) throws APIException {
         String accountEndpoint = HTTP + continent + ACCOUNT_API + summonerName + "/" + tagLine;
         HttpRequest accountRequest = createRequest(accountEndpoint);
         HttpResponse<String> response = sendRequest(accountRequest);
@@ -96,8 +70,8 @@ public class APIService {
 
     // Anfrage an Summoner-V4. Anfrageparameter ist die bereits gespeicherte PUUID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten ID, AccountID, ProfileIconID, RevisionDate & SummonerLevel.
-    private Summoner sendSummonerRequest(final String puuid) throws APIException {
-        String summonerEndpoint = HTTP + region + SUMMONER_API + puuid;
+    public Summoner sendSummonerRequest(final String server, final String puuid) throws APIException {
+        String summonerEndpoint = HTTP + server + SUMMONER_API + puuid;
         HttpRequest summonerRequest = createRequest(summonerEndpoint);
         HttpResponse<String> response = sendRequest(summonerRequest);
 
@@ -111,14 +85,14 @@ public class APIService {
 
     // Anfrage an League-V4. Anfrageparameter ist die bereits gespeicherte ID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten QueueType, Tier, Rank, LeaguePoints, Wins & Losses.
-    private LeagueEntry[] sendLeagueRequest(final String summonerId) throws APIException {
-        String leagueEndpoint = HTTP + region + LEAGUE_API + summonerId;
+    public LeagueEntry sendLeagueRequest(final String server, final String summonerId) throws APIException {
+        String leagueEndpoint = HTTP + server + LEAGUE_API + summonerId;
         HttpRequest leagueRequest = createRequest(leagueEndpoint);
         HttpResponse<String> response = sendRequest(leagueRequest);
 
         if (response != null) {
             Gson gson = new Gson();
-            return gson.fromJson(response.body(), LeagueEntry[].class);
+            return gson.fromJson(response.body(), LeagueEntry[].class)[0];
         } else {
             return null;
         }

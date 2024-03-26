@@ -10,6 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 
+ * 
+ * @author      Manuel Losbichler
+ * @version     %I%, %G%
+ */
 @Getter
 @Setter
 @NoArgsConstructor
