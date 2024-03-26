@@ -7,7 +7,12 @@ import java.net.http.HttpResponse;
 
 import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+
 import bichla.league_project.exceptions.APIException;
+import bichla.league_project.model.entity.LeagueEntry;
+import bichla.league_project.model.entity.RiotAccount;
+import bichla.league_project.model.entity.Summoner;
 
 /**
  * 
@@ -34,16 +39,16 @@ public class APIService {
         
         try {
             System.out.println("Account: ");
-            String puuid = sendAccountRequest();
-            System.out.println(puuid);
+            RiotAccount riotAccount = sendAccountRequest();
+            System.out.println(riotAccount.getPuuid());
             System.out.println("-------------------------------------------------------------------");
-            String id = sendSummonerRequest(puuid);
+            Summoner summoner = sendSummonerRequest(riotAccount.getPuuid());
             System.out.println("Summoner: ");
-            System.out.println(id);
+            System.out.println(summoner.getId());
             System.out.println("-------------------------------------------------------------------");
             System.out.println("League: ");
-            String elo = sendLeagueRequest(id);
-            System.out.println(elo);
+            LeagueEntry[] leagueEntry = sendLeagueRequest(summoner.getId());
+            System.out.println(leagueEntry[0].getTier());
         } catch (APIException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -76,13 +81,14 @@ public class APIService {
 
     // Anfrage an Account-V1. Kontinent ist eigentlich irrelevant, Riot empfiehlt trotzdem dort den richtigen Wert zu nehmen.
     // Einziges wirkliches Response-Feld ist die PUUID des angefragten Accounts.
-    private String sendAccountRequest() throws APIException {
+    private RiotAccount sendAccountRequest() throws APIException {
         String accountEndpoint = HTTP + continent + ACCOUNT_API + summonerName + "/" + tagLine;
         HttpRequest accountRequest = createRequest(accountEndpoint);
         HttpResponse<String> response = sendRequest(accountRequest);
 
         if (response != null) {
-            return response.body().split("\"")[3];
+            Gson gson = new Gson();
+            return gson.fromJson(response.body(), RiotAccount.class);
         } else {
             return null;
         }
@@ -90,13 +96,14 @@ public class APIService {
 
     // Anfrage an Summoner-V4. Anfrageparameter ist die bereits gespeicherte PUUID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten ID, AccountID, ProfileIconID, RevisionDate & SummonerLevel.
-    private String sendSummonerRequest(final String puuid) throws APIException {
+    private Summoner sendSummonerRequest(final String puuid) throws APIException {
         String summonerEndpoint = HTTP + region + SUMMONER_API + puuid;
         HttpRequest summonerRequest = createRequest(summonerEndpoint);
         HttpResponse<String> response = sendRequest(summonerRequest);
 
         if (response != null) {
-            return response.body().split("\"")[3];
+            Gson gson = new Gson();
+            return gson.fromJson(response.body(), Summoner.class);
         } else {
             return null;
         }
@@ -104,18 +111,14 @@ public class APIService {
 
     // Anfrage an League-V4. Anfrageparameter ist die bereits gespeicherte ID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten QueueType, Tier, Rank, LeaguePoints, Wins & Losses.
-    private String sendLeagueRequest(final String summonerId) throws APIException {
+    private LeagueEntry[] sendLeagueRequest(final String summonerId) throws APIException {
         String leagueEndpoint = HTTP + region + LEAGUE_API + summonerId;
         HttpRequest leagueRequest = createRequest(leagueEndpoint);
         HttpResponse<String> response = sendRequest(leagueRequest);
 
         if (response != null) {
-            String tier = response.body().split("\"")[11];
-            String division = response.body().split("\"")[15];
-            String leaguePoints = response.body().split("\"")[26]; // TODO regex to strip everything from the number.
-            String wins = response.body().split("\"")[28]; // TODO regex to strip everything from the number.
-            String losses = response.body().split("\"")[30]; // TODO regex to strip everything from the number.
-            return tier + " " + division + " " + leaguePoints + " LP, " + wins + " Wins, " + losses + " Losses";
+            Gson gson = new Gson();
+            return gson.fromJson(response.body(), LeagueEntry[].class);
         } else {
             return null;
         }
