@@ -11,6 +11,9 @@ import bichla.league_project.exceptions.APIException;
 
 /**
  * 
+ * 
+ * @author      Manuel Losbichler
+ * @version     %I%, %G%
  */
 @Service
 public class APIService {
@@ -54,7 +57,7 @@ public class APIService {
         .build();
     }
 
-    private String sendRequest(HttpRequest request) throws APIException {
+    private HttpResponse<String> sendRequest(HttpRequest request) throws APIException {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
@@ -62,7 +65,7 @@ public class APIService {
             int statusCode = response.statusCode();
 
             if (statusCode == 200) {
-                return response.body(); // TODO change to JSON response handling.
+                return response;
             } else {
                 throw new APIException("Failed API-Call: " + statusCode);
             }
@@ -76,10 +79,10 @@ public class APIService {
     private String sendAccountRequest() throws APIException {
         String accountEndpoint = HTTP + continent + ACCOUNT_API + summonerName + "/" + tagLine;
         HttpRequest accountRequest = createRequest(accountEndpoint);
-        String response = sendRequest(accountRequest);
+        HttpResponse<String> response = sendRequest(accountRequest);
 
         if (response != null) {
-            return response.split("\"")[3];
+            return response.body().split("\"")[3];
         } else {
             return null;
         }
@@ -90,11 +93,10 @@ public class APIService {
     private String sendSummonerRequest(final String puuid) throws APIException {
         String summonerEndpoint = HTTP + region + SUMMONER_API + puuid;
         HttpRequest summonerRequest = createRequest(summonerEndpoint);
-        String response = sendRequest(summonerRequest);
+        HttpResponse<String> response = sendRequest(summonerRequest);
 
         if (response != null) {
-            String id = response.split("\"")[3];
-            return id;
+            return response.body().split("\"")[3];
         } else {
             return null;
         }
@@ -105,15 +107,15 @@ public class APIService {
     private String sendLeagueRequest(final String summonerId) throws APIException {
         String leagueEndpoint = HTTP + region + LEAGUE_API + summonerId;
         HttpRequest leagueRequest = createRequest(leagueEndpoint);
-        String response = sendRequest(leagueRequest);
+        HttpResponse<String> response = sendRequest(leagueRequest);
 
         if (response != null) {
-            String tier = response.split("\"")[11];
-            String division = response.split("\"")[15];
-            String leaguePoints = response.split("\"")[26]; // TODO regex to strip everything from the number.
-            String wins = response.split("\"")[28]; // TODO regex to strip everything from the number.
-            String losses = response.split("\"")[30]; // TODO regex to strip everything from the number.
-            return tier + " " + division + " " + leaguePoints + " LP, " + wins + " Wins, " + losses + "Losses";
+            String tier = response.body().split("\"")[11];
+            String division = response.body().split("\"")[15];
+            String leaguePoints = response.body().split("\"")[26]; // TODO regex to strip everything from the number.
+            String wins = response.body().split("\"")[28]; // TODO regex to strip everything from the number.
+            String losses = response.body().split("\"")[30]; // TODO regex to strip everything from the number.
+            return tier + " " + division + " " + leaguePoints + " LP, " + wins + " Wins, " + losses + " Losses";
         } else {
             return null;
         }
