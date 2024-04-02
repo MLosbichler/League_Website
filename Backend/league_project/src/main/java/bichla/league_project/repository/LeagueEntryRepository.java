@@ -3,7 +3,7 @@ package bichla.league_project.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import bichla.league_project.model.entity.LeagueEntry;
+import bichla.league_project.model.LeagueEntry;
 import java.util.Optional;
 import java.util.List;
 

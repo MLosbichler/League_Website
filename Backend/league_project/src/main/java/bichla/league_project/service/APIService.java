@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.entity.LeagueEntry;
-import bichla.league_project.model.entity.RiotAccount;
-import bichla.league_project.model.entity.Summoner;
+import bichla.league_project.model.LeagueEntry;
+import bichla.league_project.model.RiotAccount;
+import bichla.league_project.model.Summoner;
 
 /**
  * 
@@ -23,7 +23,7 @@ import bichla.league_project.model.entity.Summoner;
 @Service
 public class APIService {
     // Riot-Games-API related fields. Probably later changed to environmental values.
-    private final String API_KEY = "";
+    private final String API_KEY = "RGAPI-134558e4-fb4a-4df2-81a6-e953ec21337b";
     private final String HTTP = "https://";
     private final String ACCOUNT_API = ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
     private final String SUMMONER_API = ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/";

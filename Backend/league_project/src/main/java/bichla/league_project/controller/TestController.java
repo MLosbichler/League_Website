@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.entity.LeagueEntry;
-import bichla.league_project.model.entity.RiotAccount;
-import bichla.league_project.model.entity.Summoner;
+import bichla.league_project.model.LeagueEntry;
+import bichla.league_project.model.RiotAccount;
+import bichla.league_project.model.Summoner;
 import bichla.league_project.service.APIService;
 
 /**
