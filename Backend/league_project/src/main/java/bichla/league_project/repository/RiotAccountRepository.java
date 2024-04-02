@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface RiotAccountRepository extends JpaRepository<RiotAccount, Long> {
     List<RiotAccount> findByPuuid(String puuid);
-    List<RiotAccount> findByGameName(String gameName);
+    List<RiotAccount> findByGameNameAndTagLine(String gameName, String tagLine);
 
     @SuppressWarnings("null")
     Optional<RiotAccount> findById(Long id);
