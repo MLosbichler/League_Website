@@ -8,7 +8,9 @@ import bichla.league_project.exceptions.APIException;
 import bichla.league_project.model.LeagueEntry;
 import bichla.league_project.model.RiotAccount;
 import bichla.league_project.model.Summoner;
-import bichla.league_project.service.APIService;
+import bichla.league_project.service.LeagueEntryService;
+import bichla.league_project.service.RiotAccountService;
+import bichla.league_project.service.SummonerService;
 
 /**
  * 
@@ -18,11 +20,16 @@ import bichla.league_project.service.APIService;
  */
 @RestController
 public class TestController {
+    private final RiotAccountService riotAccountService;
+    private final SummonerService summonerService;
+    private final LeagueEntryService leagueEntryService;
 
-    private final APIService apiService;
-
-    private TestController(APIService apiService) {
-        this.apiService = apiService;
+    private TestController(final RiotAccountService riotAccountService,
+                            final SummonerService summonerService,
+                            final LeagueEntryService leagueEntryService) {
+        this.riotAccountService = riotAccountService;
+        this.summonerService = summonerService;
+        this.leagueEntryService = leagueEntryService;
     }
 
     /**
@@ -40,9 +47,9 @@ public class TestController {
                             @PathVariable("continent") final String continent) {
 
         try {
-            RiotAccount riotAccount = apiService.sendAccountRequest(continent, summonerName, tagLine);
-            Summoner summoner = apiService.sendSummonerRequest(server ,riotAccount.getPuuid());
-            LeagueEntry leagueEntry = apiService.sendLeagueRequest(server, summoner.getId());
+            RiotAccount riotAccount = riotAccountService.sendAccountRequest(continent, summonerName, tagLine);
+            Summoner summoner = summonerService.sendSummonerRequest(server ,riotAccount.getPuuid());
+            LeagueEntry leagueEntry = leagueEntryService.sendLeagueRequest(server, summoner.getId());
             return leagueEntry.getTier() + " " + leagueEntry.getRank() + " " + leagueEntry.getLeaguePoints() + " LP";
         } catch (APIException e) {
             e.printStackTrace();
