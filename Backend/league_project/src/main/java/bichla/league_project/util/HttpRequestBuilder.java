@@ -5,7 +5,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import bichla.league_project.exceptions.APIException;
@@ -21,7 +20,6 @@ public class HttpRequestBuilder {
 
     private final String apiKey;
 
-    @Autowired
     public HttpRequestBuilder(final String apiKey) {
         this.apiKey = apiKey;
     }

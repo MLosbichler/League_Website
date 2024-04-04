@@ -2,10 +2,8 @@ package bichla.league_project.service;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -28,7 +26,6 @@ public class LeagueEntryService {
     private final String http;
     private final String leagueApi;
 
-    @Autowired
     public LeagueEntryService(final LeagueEntryRepository leagueEntryRepository,
                                 final HttpRequestBuilder httpRequestBuilder,
                                 final String http,
@@ -41,7 +38,7 @@ public class LeagueEntryService {
 
     // Anfrage an League-V4. Anfrageparameter ist die bereits gespeicherte ID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten QueueType, Tier, Rank, LeaguePoints, Wins & Losses.
-    public LeagueEntry sendLeagueRequest(final String server, final String summonerId) throws APIException {
+    public LeagueEntry sendRequest(final String server, final String summonerId) throws APIException {
         String leagueEndpoint = http + server + leagueApi + summonerId;
         HttpRequest leagueRequest = httpRequestBuilder.createRequest(leagueEndpoint);
         HttpResponse<String> response = httpRequestBuilder.sendRequest(leagueRequest);
@@ -54,16 +51,29 @@ public class LeagueEntryService {
         }
     }
 
-    // This exists for now only for debugging purposes.
-    public List<LeagueEntry> getAllEntries() {
-        return leagueEntryRepository.findAll();
+    public LeagueEntry saveLeagueEntry(final String server, final String summonerId) {
+        LeagueEntry entry = getEntryBySummonerId(summonerId);
+        
+        if (entry != null) {
+            return entry;
+        } else {
+
+            try {
+                entry = sendRequest(server, summonerId);
+            } catch (APIException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            return saveEntry(entry);
+        }
     }
 
     public Optional<LeagueEntry> getEntryById(final Long id) {
         return leagueEntryRepository.findById(id);
     }
 
-    public List<LeagueEntry> getEntriesBySummonerId(final String summonerId) {
+    public LeagueEntry getEntryBySummonerId(final String summonerId) {
         return leagueEntryRepository.findBySummonerId(summonerId);
     }
 

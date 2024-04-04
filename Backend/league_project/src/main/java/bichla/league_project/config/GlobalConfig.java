@@ -23,8 +23,13 @@ public class GlobalConfig {
     }
 
     @Bean
-    public String accountApi() {
+    public String accountApiName() {
         return ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/";
+    }
+
+    @Bean
+    public String accountApiPuuid() {
+        return ".api.riotgames.com/riot/account/v1/accounts/by-puuid/";
     }
 
     @Bean

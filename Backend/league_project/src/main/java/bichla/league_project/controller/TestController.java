@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import bichla.league_project.exceptions.APIException;
 import bichla.league_project.model.LeagueEntry;
 import bichla.league_project.model.RiotAccount;
 import bichla.league_project.model.Summoner;
@@ -45,15 +44,9 @@ public class TestController {
                             @PathVariable("tagLine") final String tagLine,
                             @PathVariable("server") final String server,
                             @PathVariable("continent") final String continent) {
-
-        try {
-            RiotAccount riotAccount = riotAccountService.sendAccountRequest(continent, summonerName, tagLine);
-            Summoner summoner = summonerService.sendSummonerRequest(server ,riotAccount.getPuuid());
-            LeagueEntry leagueEntry = leagueEntryService.sendLeagueRequest(server, summoner.getId());
-            return leagueEntry.getTier() + " " + leagueEntry.getRank() + " " + leagueEntry.getLeaguePoints() + " LP";
-        } catch (APIException e) {
-            e.printStackTrace();
-            return null;
-        }
+        RiotAccount riotAccount = riotAccountService.saveRiotAccount(continent, summonerName, tagLine);
+        Summoner summoner = summonerService.saveSummoner(server, riotAccount.getPuuid());
+        LeagueEntry leagueEntry = leagueEntryService.saveLeagueEntry(server, summoner.getId());
+        return leagueEntry.getTier() + " " + leagueEntry.getRank() + " " + leagueEntry.getLeaguePoints() + " LP";
     }
 }

@@ -5,7 +5,6 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -28,7 +27,6 @@ public class SummonerService {
     private final String http;
     private final String summonerApi;
 
-    @Autowired
     public SummonerService(final SummonerRepository summonerRepository,
                             final HttpRequestBuilder httpRequestBuilder,
                             final String http,
@@ -41,7 +39,7 @@ public class SummonerService {
 
     // Anfrage an Summoner-V4. Anfrageparameter ist die bereits gespeicherte PUUID. (speichern ist späterer Entwicklungsschritt)
     // Response-Felder beinhalten ID, AccountID, ProfileIconID, RevisionDate & SummonerLevel.
-    public Summoner sendSummonerRequest(final String server, final String puuid) throws APIException {
+    private Summoner sendRequest(final String server, final String puuid) throws APIException {
         String summonerEndpoint = http + server + summonerApi + puuid;
         HttpRequest summonerRequest = httpRequestBuilder.createRequest(summonerEndpoint);
         HttpResponse<String> response = httpRequestBuilder.sendRequest(summonerRequest);
@@ -54,12 +52,26 @@ public class SummonerService {
         }
     }
 
-    public List<Summoner> getAllSummoners() {
-        return summonerRepository.findAll();
+    public Summoner saveSummoner(final String server, final String puuid) {
+        Summoner summoner = getSummonerByPuuid(puuid);
+
+        if (summoner != null) {
+            return summoner;
+        } else {
+
+            try {
+                summoner = sendRequest(server, puuid);
+            } catch (APIException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            return saveSummoner(summoner);
+        }
     }
 
     @SuppressWarnings("null")
-    public Optional<Summoner> getSummonerById(final Long id) {
+    public Optional<Summoner> getSummonerById(final String id) {
         return summonerRepository.findById(id);
     }
 
@@ -67,12 +79,8 @@ public class SummonerService {
         return summonerRepository.findByAccountId(accountId);
     }
 
-    public List<Summoner> getSummonersByPuuid(final String puuid) {
+    public Summoner getSummonerByPuuid(final String puuid) {
         return summonerRepository.findByPuuid(puuid);
-    }
-
-    public List<Summoner> getSummonersBySummonerId(final Long summonerId) {
-        return summonerRepository.findBySummonerId(summonerId);
     }
 
     public List<Summoner> getSummonersByName(final String name) {

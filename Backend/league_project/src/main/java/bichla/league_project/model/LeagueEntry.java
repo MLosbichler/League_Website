@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,4 +39,7 @@ public class LeagueEntry {
     private Boolean hotStreak;
     private Boolean freshBlood;
     private Boolean inactive;
+
+    @OneToOne(mappedBy = "leagueEntry")
+    private Summoner summoner;
 }

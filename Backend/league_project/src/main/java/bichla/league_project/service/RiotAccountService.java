@@ -2,10 +2,7 @@ package bichla.league_project.service;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
@@ -26,24 +23,22 @@ public class RiotAccountService {
     private final RiotAccountRepository riotAccountRepository;
     private final HttpRequestBuilder httpRequestBuilder;
     private final String http;
-    private final String accountApi;
+    private final String accountApiName;
 
-    @Autowired
     public RiotAccountService(final RiotAccountRepository riotAccountRepository,
                                 final HttpRequestBuilder httpRequestBuilder,
                                 final String http,
-                                final String accountApi) {
+                                final String accountApiName) {
         this.riotAccountRepository = riotAccountRepository;
         this.httpRequestBuilder = httpRequestBuilder;
         this.http = http;
-        this.accountApi = accountApi;
+        this.accountApiName = accountApiName;
+
     }
 
-    // Anfrage an Account-V1. Kontinent ist eigentlich irrelevant, Riot empfiehlt trotzdem dort den richtigen Wert zu nehmen.
-    // Einziges wirkliches Response-Feld ist die PUUID des angefragten Accounts.
-    public RiotAccount sendAccountRequest(final String continent, final String summonerName, final String tagLine) throws APIException {
-        String accountEndpoint = http + continent + accountApi + summonerName + "/" + tagLine;
-        HttpRequest accountRequest = httpRequestBuilder.createRequest(accountEndpoint);
+    private RiotAccount sendRequest(final String continent, final String summonerName, final String tagLine) throws APIException {
+        String request = http + continent + accountApiName + summonerName + "/" + tagLine;
+        HttpRequest accountRequest = httpRequestBuilder.createRequest(request);
         HttpResponse<String> response = httpRequestBuilder.sendRequest(accountRequest);
 
         if (response != null) {
@@ -54,28 +49,34 @@ public class RiotAccountService {
         }
     }
 
-    public List<RiotAccount> getAllAccounts() {
-        return riotAccountRepository.findAll();
+    public RiotAccount saveRiotAccount(final String continent, final String summonerName, final String tagLine) {
+        RiotAccount account = getAccountByName(summonerName, tagLine);
+
+        // Name changes might lead to differences between PUUIDs and names.
+        if (account != null) {
+            return account;
+        } else {
+
+            try {
+                account = sendRequest(continent, summonerName, tagLine);
+            } catch (APIException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            return saveAccount(account);
+        }
     }
 
-    public Optional<RiotAccount> getAccountById(final Long id) {
-        return riotAccountRepository.findById(id);
-    }
-
-    public List<RiotAccount> getAccountsByPuuid(final String puuid) {
+    public RiotAccount getAccountByPuuid(final String puuid) {
         return riotAccountRepository.findByPuuid(puuid);
     }
 
-    public List<RiotAccount> getAccountsByGameName(final String gameName, final String tagLine) {
+    public RiotAccount getAccountByName(final String gameName, final String tagLine) {
         return riotAccountRepository.findByGameNameAndTagLine(gameName, tagLine);
     }
 
     public RiotAccount saveAccount(final RiotAccount account) {
         return riotAccountRepository.save(account);
-    }
-
-    @SuppressWarnings("null")
-    public void deleteAccountById(final Long id) {
-        riotAccountRepository.deleteById(id);
     }
 }

@@ -4,8 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import bichla.league_project.model.RiotAccount;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * 
@@ -14,12 +12,9 @@ import java.util.Optional;
  * @version     %I%, %G%
  */
 @Repository
-public interface RiotAccountRepository extends JpaRepository<RiotAccount, Long> {
-    List<RiotAccount> findByPuuid(String puuid);
-    List<RiotAccount> findByGameNameAndTagLine(String gameName, String tagLine);
-
-    @SuppressWarnings("null")
-    Optional<RiotAccount> findById(Long id);
+public interface RiotAccountRepository extends JpaRepository<RiotAccount, String> {
+    RiotAccount findByPuuid(String puuid);
+    RiotAccount findByGameNameAndTagLine(String gameName, String tagLine);
 
     @SuppressWarnings("null")
     @Override

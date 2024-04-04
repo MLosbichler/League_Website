@@ -17,10 +17,9 @@ import java.util.List;
 public interface LeagueEntryRepository extends JpaRepository<LeagueEntry, Long>{
     @SuppressWarnings("null")
     Optional<LeagueEntry> findById(Long id);
-    List<LeagueEntry> findBySummonerId(String summonerId);
+    LeagueEntry findBySummonerId(String summonerId);
     List<LeagueEntry> findByLeagueId(String leagueId);
     List<LeagueEntry> findBySummonerName(String summonerName);
-    List<LeagueEntry> findByQueueType(String queueType);
     
     @SuppressWarnings("null")
     @Override
