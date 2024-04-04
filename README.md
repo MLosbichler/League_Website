@@ -9,9 +9,9 @@ This is a website targeting League of Legends players. While there is a function
 This website aims to target this issue, offering the creation of groups. These groups list a leaderboard of invited players, who have to create accounts using Discord. They can link multiple League of Legends accounts to their website account.
 
 ### PROJECT GOALS
-1.  Create working calls to the Riot Games API using the Orianna framework. Create a database table to save League of Legends accounts, their crucial data and their current rating. (WIP)
-2.  Work out account-creation using Discord.
-3.  Implement the ability to create and join groups.
+1.  Create working calls to the Riot Games API using the Orianna framework. Create a database table to save League of Legends accounts, their crucial data and their current rating. (completed)
+2.  Work out account-creation using Discord. (WIP)
+3.  Implement the ability to create and join groups. (WIP)
 4.  Create a Frontend. (doesn´t have to be fancy at this point, just functioning with the intended layout)
 5.  Implement the Backend API functionality to enable data transferation with the Frontend.
 6.  Make Frontend fancier.
