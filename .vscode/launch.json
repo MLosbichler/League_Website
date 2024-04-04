@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-LeagueProjectApplication<league_project>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "bichla.league_project.LeagueProjectApplication",
+            "projectName": "league_project",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
