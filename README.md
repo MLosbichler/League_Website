@@ -1,5 +1,5 @@
 ### DISCLAIMER
-This project is a practice project and not intended to be used for any other purposes. My goal is to improve my skills in Web-Development, as I´m about to finish my Bachelor´s Degree and this is the direction I want to start my career with afterwards.
+This project is a practice project and not intended to be used for any other purposes. My goal is to improve my skills in Web-Development, as this is the direction I want to start my career with.
 
 My focus will be on getting to know the later listed technologies (some of which I have already used for a Uni project before) and gaining more experience in creating and building projects, while trying to implement best practices as much as I can.
 
