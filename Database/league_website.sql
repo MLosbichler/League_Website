@@ -2,7 +2,7 @@
 -- PostgreSQL database cluster dump
 --
 
--- Started on 2024-03-26 11:43:29
+-- Started on 2024-04-04 15:05:25
 
 SET default_transaction_read_only = off;
 
@@ -44,7 +44,7 @@ ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-03-26 11:43:29
+-- Started on 2024-04-04 15:05:25
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -57,7 +57,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Completed on 2024-03-26 11:43:30
+-- Completed on 2024-04-04 15:05:26
 
 --
 -- PostgreSQL database dump complete
@@ -74,7 +74,7 @@ SET row_security = off;
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-03-26 11:43:30
+-- Started on 2024-04-04 15:05:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -88,7 +88,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 4858 (class 1262 OID 16753)
+-- TOC entry 4854 (class 1262 OID 16753)
 -- Name: league_website; Type: DATABASE; Schema: -; Owner: postgres
 --
 
@@ -115,12 +115,11 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 220 (class 1259 OID 16774)
+-- TOC entry 217 (class 1259 OID 16774)
 -- Name: league_entry; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.league_entry (
-    id integer NOT NULL,
     league_id character varying,
     summoner_id character varying,
     summoner_name character varying,
@@ -133,14 +132,15 @@ CREATE TABLE public.league_entry (
     hot_streak boolean,
     veteran boolean,
     fresh_blood boolean,
-    inactive boolean
+    inactive boolean,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE public.league_entry OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 16773)
+-- TOC entry 218 (class 1259 OID 16789)
 -- Name: league_entry_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -160,8 +160,7 @@ ALTER TABLE public.league_entry ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY
 --
 
 CREATE TABLE public.riot_account (
-    id integer NOT NULL,
-    puuid character varying,
+    puuid character varying NOT NULL,
     game_name character varying,
     tag_line character varying
 );
@@ -170,33 +169,17 @@ CREATE TABLE public.riot_account (
 ALTER TABLE public.riot_account OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 16757)
--- Name: riot_account_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-ALTER TABLE public.riot_account ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.riot_account_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
--- TOC entry 218 (class 1259 OID 16766)
+-- TOC entry 216 (class 1259 OID 16766)
 -- Name: summoner; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.summoner (
-    summoner_id integer NOT NULL,
     account_id character varying,
     profile_icon_id integer,
-    revision_date integer,
+    revision_date numeric,
     name character varying,
     id character varying,
-    puuid character varying,
+    puuid character varying NOT NULL,
     summoner_level integer
 );
 
@@ -204,79 +187,46 @@ CREATE TABLE public.summoner (
 ALTER TABLE public.summoner OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 16765)
--- Name: summoner_summoner_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-ALTER TABLE public.summoner ALTER COLUMN summoner_id ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME public.summoner_summoner_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
---
--- TOC entry 4852 (class 0 OID 16774)
--- Dependencies: 220
+-- TOC entry 4847 (class 0 OID 16774)
+-- Dependencies: 217
 -- Data for Name: league_entry; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.league_entry (id, league_id, summoner_id, summoner_name, queue_type, tier, rank, league_points, wins, losses, hot_streak, veteran, fresh_blood, inactive) FROM stdin;
+COPY public.league_entry (league_id, summoner_id, summoner_name, queue_type, tier, rank, league_points, wins, losses, hot_streak, veteran, fresh_blood, inactive, id) FROM stdin;
 \.
 
 
 --
--- TOC entry 4847 (class 0 OID 16754)
+-- TOC entry 4845 (class 0 OID 16754)
 -- Dependencies: 215
 -- Data for Name: riot_account; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.riot_account (id, puuid, game_name, tag_line) FROM stdin;
+COPY public.riot_account (puuid, game_name, tag_line) FROM stdin;
 \.
 
 
 --
--- TOC entry 4850 (class 0 OID 16766)
--- Dependencies: 218
+-- TOC entry 4846 (class 0 OID 16766)
+-- Dependencies: 216
 -- Data for Name: summoner; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.summoner (summoner_id, account_id, profile_icon_id, revision_date, name, id, puuid, summoner_level) FROM stdin;
+COPY public.summoner (account_id, profile_icon_id, revision_date, name, id, puuid, summoner_level) FROM stdin;
 \.
 
 
 --
--- TOC entry 4859 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 4855 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: league_entry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.league_entry_id_seq', 1, false);
+SELECT pg_catalog.setval('public.league_entry_id_seq', 1, true);
 
 
 --
--- TOC entry 4860 (class 0 OID 0)
--- Dependencies: 216
--- Name: riot_account_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.riot_account_id_seq', 1, false);
-
-
---
--- TOC entry 4861 (class 0 OID 0)
--- Dependencies: 217
--- Name: summoner_summoner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.summoner_summoner_id_seq', 1, false);
-
-
---
--- TOC entry 4703 (class 2606 OID 16780)
+-- TOC entry 4701 (class 2606 OID 16796)
 -- Name: league_entry league_entry_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -285,24 +235,24 @@ ALTER TABLE ONLY public.league_entry
 
 
 --
--- TOC entry 4699 (class 2606 OID 16762)
+-- TOC entry 4697 (class 2606 OID 16782)
 -- Name: riot_account riot_account_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.riot_account
-    ADD CONSTRAINT riot_account_pk PRIMARY KEY (id);
+    ADD CONSTRAINT riot_account_pk PRIMARY KEY (puuid);
 
 
 --
--- TOC entry 4701 (class 2606 OID 16772)
+-- TOC entry 4699 (class 2606 OID 16798)
 -- Name: summoner summoner_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.summoner
-    ADD CONSTRAINT summoner_pk PRIMARY KEY (summoner_id);
+    ADD CONSTRAINT summoner_pk PRIMARY KEY (puuid);
 
 
--- Completed on 2024-03-26 11:43:30
+-- Completed on 2024-04-04 15:05:26
 
 --
 -- PostgreSQL database dump complete
@@ -321,7 +271,7 @@ ALTER TABLE ONLY public.summoner
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-03-26 11:43:30
+-- Started on 2024-04-04 15:05:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -376,13 +326,13 @@ COPY public.test  FROM stdin;
 \.
 
 
--- Completed on 2024-03-26 11:43:30
+-- Completed on 2024-04-04 15:05:26
 
 --
 -- PostgreSQL database dump complete
 --
 
--- Completed on 2024-03-26 11:43:30
+-- Completed on 2024-04-04 15:05:26
 
 --
 -- PostgreSQL database cluster dump complete

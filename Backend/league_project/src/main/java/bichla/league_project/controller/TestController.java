@@ -1,15 +1,15 @@
 package bichla.league_project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.entity.LeagueEntry;
-import bichla.league_project.model.entity.RiotAccount;
-import bichla.league_project.model.entity.Summoner;
-import bichla.league_project.service.APIService;
+import bichla.league_project.model.LeagueEntry;
+import bichla.league_project.model.RiotAccount;
+import bichla.league_project.model.Summoner;
+import bichla.league_project.service.LeagueEntryService;
+import bichla.league_project.service.RiotAccountService;
+import bichla.league_project.service.SummonerService;
 
 /**
  * 
@@ -19,12 +19,16 @@ import bichla.league_project.service.APIService;
  */
 @RestController
 public class TestController {
+    private final RiotAccountService riotAccountService;
+    private final SummonerService summonerService;
+    private final LeagueEntryService leagueEntryService;
 
-    private final APIService apiService;
-
-    @Autowired
-    private TestController(APIService apiService) {
-        this.apiService = apiService;
+    private TestController(final RiotAccountService riotAccountService,
+                            final SummonerService summonerService,
+                            final LeagueEntryService leagueEntryService) {
+        this.riotAccountService = riotAccountService;
+        this.summonerService = summonerService;
+        this.leagueEntryService = leagueEntryService;
     }
 
     /**
@@ -40,15 +44,9 @@ public class TestController {
                             @PathVariable("tagLine") final String tagLine,
                             @PathVariable("server") final String server,
                             @PathVariable("continent") final String continent) {
-
-        try {
-            RiotAccount riotAccount = apiService.sendAccountRequest(continent, summonerName, tagLine);
-            Summoner summoner = apiService.sendSummonerRequest(server ,riotAccount.getPuuid());
-            LeagueEntry leagueEntry = apiService.sendLeagueRequest(server, summoner.getId());
-            return leagueEntry.getTier() + " " + leagueEntry.getRank() + " " + leagueEntry.getLeaguePoints() + " LP";
-        } catch (APIException e) {
-            e.printStackTrace();
-            return null;
-        }
+        RiotAccount riotAccount = riotAccountService.saveRiotAccount(continent, summonerName, tagLine);
+        Summoner summoner = summonerService.saveSummoner(server, riotAccount.getPuuid());
+        LeagueEntry leagueEntry = leagueEntryService.saveLeagueEntry(server, summoner.getId());
+        return leagueEntry.getTier() + " " + leagueEntry.getRank() + " " + leagueEntry.getLeaguePoints() + " LP";
     }
 }

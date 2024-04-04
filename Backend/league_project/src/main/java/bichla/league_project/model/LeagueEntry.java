@@ -1,11 +1,11 @@
-package bichla.league_project.model.entity;
+package bichla.league_project.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,4 +39,7 @@ public class LeagueEntry {
     private Boolean hotStreak;
     private Boolean freshBlood;
     private Boolean inactive;
+
+    @OneToOne(mappedBy = "leagueEntry")
+    private Summoner summoner;
 }
