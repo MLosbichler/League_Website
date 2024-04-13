@@ -2,7 +2,6 @@ package bichla.league_project.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -35,8 +34,4 @@ public class Summoner {
 
     @OneToOne(mappedBy = "summoner")
     private RiotAccount riotAccount;
-
-    @OneToOne
-    @JoinColumn(name = "summonerId", referencedColumnName = "id")
-    private LeagueEntry leagueEntry;
 }
