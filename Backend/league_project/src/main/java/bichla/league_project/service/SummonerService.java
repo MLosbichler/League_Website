@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.Summoner;
+import bichla.league_project.model.entity.Summoner;
 import bichla.league_project.repository.SummonerRepository;
 import bichla.league_project.util.HttpRequestBuilder;
 

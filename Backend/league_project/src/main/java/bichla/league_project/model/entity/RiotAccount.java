@@ -1,4 +1,4 @@
-package bichla.league_project.model;
+package bichla.league_project.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

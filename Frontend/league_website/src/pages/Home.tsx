@@ -1,5 +1,5 @@
-function Home() {
-  return <h1>Hello World! </h1>;
-}
+import { SummonerAddition } from "../components/SummonerAddition";
 
-export default Home;
+export function Home() {
+  return <SummonerAddition />;
+}

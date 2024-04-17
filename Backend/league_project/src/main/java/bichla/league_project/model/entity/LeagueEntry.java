@@ -1,10 +1,7 @@
-package bichla.league_project.model;
+package bichla.league_project.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +21,9 @@ import lombok.Setter;
 public class LeagueEntry {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String summonerId;
 
     private String leagueId;
-    private String summonerId;
-    private String summonerName;
     private String queueType;
     private String tier;
     private String rank;
@@ -39,7 +33,4 @@ public class LeagueEntry {
     private Boolean hotStreak;
     private Boolean freshBlood;
     private Boolean inactive;
-
-    @OneToOne(mappedBy = "leagueEntry")
-    private Summoner summoner;
 }
