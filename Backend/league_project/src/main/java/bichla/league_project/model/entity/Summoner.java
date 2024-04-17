@@ -1,14 +1,12 @@
-package bichla.league_project.model;
+package bichla.league_project.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * 
@@ -19,19 +17,21 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 @Entity
-@Table(name = "riot_account")
-public class RiotAccount {
+@Table(name = "summoner")
+public class Summoner {
 
     // PUUID is unique globally. It is uneffected by account name changes or region transfers.
     @Id
     private String puuid;
 
-    private String gameName;
-    private String tagLine;
+    private String accountId;
+    private Integer profileIconId;
+    private Long revisionDate;
+    private String name;
+    private Long summonerLevel;
+    private String id;
 
-    @OneToOne
-    @JoinColumn(name = "puuid")
-    private Summoner summoner;
+    @OneToOne(mappedBy = "summoner")
+    private RiotAccount riotAccount;
 }

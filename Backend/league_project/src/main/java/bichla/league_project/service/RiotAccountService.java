@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.RiotAccount;
+import bichla.league_project.model.entity.RiotAccount;
 import bichla.league_project.repository.RiotAccountRepository;
 import bichla.league_project.util.HttpRequestBuilder;
 

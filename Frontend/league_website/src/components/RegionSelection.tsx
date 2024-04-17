@@ -11,15 +11,17 @@ type OptionType = {
 };
 
 const options: OptionType[] = [
-  { value: "EUW", label: "EUW" },
-  { value: "NA", label: "NA" },
+  { value: "EUW1", label: "EUW" },
+  { value: "NA1", label: "NA" },
   { value: "KR", label: "KR" },
 ];
 
 const RegionSelection: React.FC<RegionSelectionProps> = ({
   onRegionChange,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
+  const [selectedOption, setSelectedOption] = useState<OptionType | null>(
+    options[0]
+  );
 
   const handleChange = (selectedOption: OptionType | null) => {
     setSelectedOption(selectedOption);
@@ -34,7 +36,7 @@ const RegionSelection: React.FC<RegionSelectionProps> = ({
       options={options}
       value={selectedOption}
       onChange={handleChange}
-      placeholder="Select an option"
+      placeholder="EUW"
     />
   );
 };

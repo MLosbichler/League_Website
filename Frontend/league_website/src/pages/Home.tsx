@@ -9,40 +9,50 @@ interface SearchResult {
 
 const Home: React.FC = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [region, setRegion] = useState<String>();
+  const [server, setServer] = useState<String>();
+  const [continent, setContinent] = useState<String>("EUROPE");
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
-  const handleRegionChange = (selectedRegion: string) => {
-    setRegion(selectedRegion);
+  const handleServerChange = (selectedRegion: string) => {
+    setServer(selectedRegion);
+
+    if (server === "EUW") {
+      setContinent("EUROPE");
+    } else if (server === "NA") {
+      setContinent("AMERICAS");
+    } else if (server === "KR") {
+      setContinent("ASIA");
+    }
   };
 
   const handleSearch = async (query: string) => {
-    setLoading(true);
-    setError("");
+    if (!query.includes("#")) {
+      console.error("Bitte gib eine gültige Riot-ID an.");
+    } else {
+      setLoading(true);
+      let summonerName: String[] = query
+        .split("#")
+        .filter((substring) => !substring.includes("#"))
+        .map((substring) => substring.toUpperCase());
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/rank/europe/${region}/${query}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch search results");
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/rank/${continent}/${server}/${summonerName[0]}/${summonerName[1]}`
+        );
+        const data = await response.json();
+        setSearchResults(data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setLoading(false);
       }
-      const data = await response.json();
-      setSearchResults(data);
-    } catch (error) {
-      setError("Failed to fetch search results");
-      console.error("Error fetching search results:", error);
-    } finally {
-      setLoading(false);
-    }
 
-    setSearchResults([{ id: 1, title: `Search result for "${query}"` }]);
+      setSearchResults([{ id: 1, title: `Search result for "${query}"` }]);
+    }
   };
 
   return (
     <>
-      {" "}
       <div>
         <h1>Summoner:</h1>
         <SearchBar onSearch={handleSearch} />
@@ -54,7 +64,7 @@ const Home: React.FC = () => {
       </div>
       <div>
         <h1>Server:</h1>
-        <RegionSelection onRegionChange={handleRegionChange} />
+        <RegionSelection onRegionChange={handleServerChange} />
       </div>
     </>
   );

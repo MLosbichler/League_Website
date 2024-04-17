@@ -2,14 +2,13 @@ package bichla.league_project.service;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
 import bichla.league_project.exceptions.APIException;
-import bichla.league_project.model.LeagueEntry;
+import bichla.league_project.model.entity.LeagueEntry;
 import bichla.league_project.repository.LeagueEntryRepository;
 import bichla.league_project.util.HttpRequestBuilder;
 
@@ -54,23 +53,13 @@ public class LeagueEntryService {
     public LeagueEntry saveLeagueEntry(final String server, final String summonerId) {
         LeagueEntry entry = getEntryBySummonerId(summonerId);
         
-        if (entry != null) {
-            return entry;
-        } else {
-
-            try {
-                entry = sendRequest(server, summonerId);
-            } catch (APIException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            return saveEntry(entry);
+        try {
+            entry = sendRequest(server, summonerId);
+        } catch (APIException e) {
+            e.printStackTrace();
         }
-    }
 
-    public Optional<LeagueEntry> getEntryById(final Long id) {
-        return leagueEntryRepository.findById(id);
+        return saveEntry(entry);
     }
 
     public LeagueEntry getEntryBySummonerId(final String summonerId) {
