@@ -60,10 +60,14 @@ export function SummonerAddition() {
             placeholder="Summoner#TAG"
             value={value}
             onChange={onChange}
-            style={{ textAlign: "center" }}
+            style={{ textAlign: "center", marginTop: "40vh", width: "50vh" }}
           />
-          <RegionSelection onRegionChange={handleServerChange} />
-          <button type="submit">Add</button>
+          <div style={{ marginTop: "40vh" }}>
+            <RegionSelection onRegionChange={handleServerChange} />
+          </div>
+          <button type="submit" style={{ marginTop: "40vh" }}>
+            Add
+          </button>
         </div>
       </form>
       <div>{JSON.stringify(data, null, 2)}</div>
