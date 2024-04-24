@@ -41,4 +41,14 @@ public class GlobalConfig {
     public String leagueApi() {
         return ".api.riotgames.com/lol/league/v4/entries/by-summoner/";
     }
+
+    @Bean
+    public String discordClientId() {
+        return "1225456729110745128";
+    }
+
+    @Bean
+    public String discordClientSecret() {
+        return "dzBo6mwLgKQsWYfd_vtaToAZ-0q2F7_U";
+    }
 }

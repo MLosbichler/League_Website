@@ -1,5 +1,9 @@
-import { SummonerAddition } from "../components/SummonerAddition";
-
 export function Home() {
-  return <SummonerAddition />;
+  return (
+    <>
+      <div
+        style={{ width: "100%", height: "900px", backgroundColor: "pink" }}
+      ></div>
+    </>
+  );
 }
